@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AdmitBot – Trợ lý tuyển sinh AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f4f6;--panel:#fff;--ink:#241a21;--mute:#6f6068;--line:#e6dde2;--pri:#8a1f4b;--pri2:#6c173a;--onpri:#fff;--soft:#f6e6ee;--bub:#efe9ed;--ok:#1e7a4f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a1318;--panel:#251b22;--ink:#f3eaf0;--mute:#b1a0aa;--line:#3a2d36;--pri:#e0678f;--pri2:#c9527b;--onpri:#2a0f1c;--soft:#3a2230;--bub:#32262f;--ok:#58c28f}}
+:root[data-theme="dark"]{--bg:#1a1318;--panel:#251b22;--ink:#f3eaf0;--mute:#b1a0aa;--line:#3a2d36;--pri:#e0678f;--pri2:#c9527b;--onpri:#2a0f1c;--soft:#3a2230;--bub:#32262f;--ok:#58c28f}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 "Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+.app{display:flex;height:100%}
+aside{width:272px;flex:none;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:16px 12px;gap:6px}
+.brand{display:flex;gap:10px;align-items:center;padding:4px 8px 12px}
+.logo{width:38px;height:38px;border-radius:12px 12px 12px 3px;background:var(--pri);color:var(--onpri);display:grid;place-items:center;font-weight:700;font-size:18px}
+.brand b{display:block;font-size:16px;line-height:1.2}.brand small{color:var(--mute);font-size:12px}
+.nav{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:0;background:none;padding:9px 12px;border-radius:10px;color:var(--ink)}
+.nav:hover{background:var(--bub)}.nav.on{background:var(--soft);color:var(--pri);font-weight:600}
+.newbtn{margin:8px 0 4px;border:1px solid var(--pri);background:none;color:var(--pri);border-radius:10px;padding:9px;font-weight:600}
+.newbtn:hover{background:var(--soft)}
+.hist-h{font-size:12.5px;color:var(--mute);margin:12px 8px 2px;font-weight:600}
+#hist{flex:1;overflow:auto;display:flex;flex-direction:column;gap:2px}
+.hi{display:flex;align-items:center;border-radius:9px}
+.hi:hover,.hi.on{background:var(--bub)}
+.hi button.t{flex:1;text-align:left;background:none;border:0;padding:7px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+.hi button.x{background:none;border:0;color:var(--mute);padding:4px 9px;font-size:16px}
+.empty{color:var(--mute);font-size:13.5px;padding:6px 10px}
+main{flex:1;min-width:0;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:10px;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line)}
+header h1{font-size:16px;margin:0;flex:1}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-right:6px}
+.sub{font-weight:400;color:var(--mute);font-size:13px}
+.ib{border:1px solid var(--line);background:none;border-radius:9px;padding:6px 11px;font-size:13.5px}
+.ib:hover{background:var(--bub)}
+#menu{display:none}
+.view{display:none;flex:1;min-height:0;flex-direction:column}.view.on{display:flex}
+#msgs{flex:1;overflow:auto;padding:22px 20px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+.row{display:flex;gap:10px;max-width:760px;width:100%;margin:0 auto}
+.row.u{justify-content:flex-end}
+.av{width:30px;height:30px;border-radius:10px 10px 10px 2px;background:var(--pri);color:var(--onpri);display:grid;place-items:center;font-size:13px;font-weight:700;flex:none}
+.bub{background:var(--bub);padding:10px 14px;border-radius:14px 14px 14px 4px;max-width:calc(100% - 40px)}
+.u .bub{background:var(--pri);color:var(--onpri);border-radius:14px 14px 4px 14px;max-width:80%}
+.bub p{margin:0 0 6px}.bub p:last-child{margin:0}
+.src{font-size:12.5px;color:var(--mute);margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
+.acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:99px;padding:5px 12px;font-size:13.5px}
+.chip:hover{border-color:var(--pri);color:var(--pri)}
+.chip.p{background:var(--pri);color:var(--onpri);border-color:var(--pri)}
+.mc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:8px}
+.mc b{display:block}.mc .m{color:var(--mute);font-size:13px}
+.mc .f{color:var(--pri);font-weight:600}
+.typing span{display:inline-block;width:7px;height:7px;margin:0 2px;border-radius:50%;background:var(--mute);animation:b 1s infinite}
+.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,60%,100%{opacity:.3}30%{opacity:1;transform:translateY(-3px)}}
+@media(prefers-reduced-motion:reduce){.typing span{animation:none}#msgs{scroll-behavior:auto}}
+.compose{padding:10px 20px 16px;background:var(--bg)}
+.sug{display:flex;gap:6px;overflow-x:auto;max-width:760px;margin:0 auto 8px;padding-bottom:2px}
+.sug .chip{white-space:nowrap}
+.box{display:flex;gap:8px;max-width:760px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:6px}
+.box input{flex:1;border:0;background:none;padding:8px 10px;min-width:0;outline:none}
+.box:focus-within{border-color:var(--pri)}
+.send{border:0;background:var(--pri);color:var(--onpri);border-radius:10px;padding:0 18px;font-weight:600}
+.send:hover{background:var(--pri2)}
+.note{max-width:760px;margin:6px auto 0;font-size:12px;color:var(--mute);text-align:center}
+.page{padding:22px 20px;overflow:auto;flex:1}
+.wrap{max-width:900px;margin:0 auto}
+.page h2{margin:0 0 12px;font-size:20px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.filters input,.filters select,.fld input,.fld select,.fld textarea{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:8px 10px}
+.filters input{flex:1;min-width:180px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.card h3{margin:0;font-size:16px}.card .m{color:var(--mute);font-size:13.5px}
+.card dl{margin:6px 0;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:13.5px}.card dt{color:var(--mute)}.card dd{margin:0}
+.card .acts{margin-top:auto}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.stat b{display:block;font-size:24px;color:var(--pri);line-height:1.2}.stat span{color:var(--mute);font-size:13.5px}
+.bar{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:14px}.bar i{display:block;height:10px;border-radius:5px;background:var(--pri)}.bar span{width:170px;flex:none}
+.rg{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.tag{font-size:12.5px;padding:2px 10px;border-radius:99px;background:var(--soft);color:var(--pri);font-weight:600}
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--ink);padding:20px;width:min(440px,92vw)}
+dialog::backdrop{background:rgba(20,10,16,.5)}
+dialog h2{margin:0 0 12px;font-size:18px}
+.fld{display:block;margin-bottom:10px;font-size:13.5px;color:var(--mute)}
+.fld input,.fld select,.fld textarea{display:block;width:100%;margin-top:3px;color:var(--ink)}
+.err{color:#c0392b;font-size:12.5px;min-height:16px;display:block}
+.dlgb{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
+#toast.on{opacity:1}
+@media(max-width:800px){
+aside{position:fixed;z-index:20;left:0;top:0;bottom:0;transform:translateX(-100%);transition:transform .2s;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+aside.open{transform:none;box-shadow:0 0 40px rgba(0,0,0,.3)}
+#menu{display:inline-block}
+header{padding:10px 12px}#msgs,.compose,.page{padding-left:12px;padding-right:12px}
+.hide-s{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside id="side">
+  <div class="brand"><div class="logo">A</div><div><b>AdmitBot</b><small>Trợ lý tuyển sinh AI</small></div></div>
+  <button class="nav on" data-v="chat">Trò chuyện</button>
+  <button class="nav" data-v="lookup">Tra cứu ngành đào tạo</button>
+  <button class="nav" data-v="regs">Ngành đã đăng ký</button>
+  <button class="nav" data-v="stats">Thống kê</button>
+  <button class="newbtn" id="newchat">+ Cuộc trò chuyện mới</button>
+  <div class="hist-h">Lịch sử chat</div>
+  <div id="hist"></div>
+</aside>
+<main>
+  <header>
+    <button class="ib" id="menu" aria-label="Mở menu">☰</button>
+    <h1>Trợ lý tuyển sinh AI <span class="sub hide-s"><span class="dot"></span>AI trực tuyến</span></h1>
+    <button class="ib" id="copy">Sao chép chat</button>
+    <button class="ib" id="theme" aria-label="Đổi giao diện sáng/tối">Sáng/Tối</button>
+  </header>
+
+  <section class="view on" id="v-chat">
+    <div id="msgs" aria-live="polite"></div>
+    <div class="compose">
+      <div class="sug" id="sug"></div>
+      <div class="box"><input id="inp" placeholder="Nhập câu hỏi, ví dụ: học phí ngành Công nghệ thông tin" autocomplete="off"><button class="send" id="send">Gửi</button></div>
+      <div class="note">Dữ liệu tuyển sinh trong bản demo chỉ mang tính minh họa. Hãy đối chiếu với thông báo chính thức của nhà trường.</div>
+    </div>
+  </section>
+
+  <section class="view" id="v-lookup"><div class="page"><div class="wrap">
+    <h2>Tra cứu ngành đào tạo</h2>
+    <div class="filters">
+      <input id="fq" placeholder="Tìm tên ngành" aria-label="Tìm tên ngành">
+      <select id="fg" aria-label="Nhóm ngành"></select>
+      <select id="ff" aria-label="Mức học phí"><option value="0">Mọi mức học phí</option><option value="20">Đến 20 triệu/năm</option><option value="25">Đến 25 triệu/năm</option><option value="30">Đến 30 triệu/năm</option></select>
+      <select id="fm" aria-label="Phương thức xét tuyển"><option value="">Mọi phương thức</option></select>
+    </div>
+    <div class="grid" id="mgrid"></div>
+  </div></div></section>
+
+  <section class="view" id="v-regs"><div class="page"><div class="wrap"><h2>Ngành đã đăng ký tư vấn</h2><div id="rlist"></div></div></div></section>
+  <section class="view" id="v-stats"><div class="page"><div class="wrap"><h2>Thống kê</h2><div class="stats" id="sgrid"></div><h3 style="font-size:16px;margin:0 0 6px">Mức độ quan tâm theo ngành</h3><div id="sbars"></div></div></div></section>
+</main>
+</div>
+
+<dialog id="dlg">
+  <h2>Đăng ký nhận tư vấn</h2>
+  <label class="fld">Họ và tên<input id="rn" autocomplete="name"><span class="err" id="e1"></span></label>
+  <label class="fld">Số điện thoại hoặc email<input id="rc" autocomplete="email"><span class="err" id="e2"></span></label>
+  <label class="fld">Ngành quan tâm<select id="rm"></select></label>
+  <label class="fld">Nội dung cần hỗ trợ<textarea id="rt" rows="3"></textarea></label>
+  <div class="dlgb"><button class="ib" id="rc-cancel">Hủy</button><button class="send" id="rsave" style="padding:8px 18px">Gửi đăng ký</button></div>
+</dialog>
+<div id="toast" role="status"></div>
+
+<script>
+const SRC="Nguồn: Đề án tuyển sinh 2026 (dữ liệu minh họa)";
+const M=[
+{id:"cntt",n:"Công nghệ thông tin",g:"Công nghệ",fee:28,dur:"4 năm",tc:"A00, A01, D01",pt:["Điểm thi THPT","Học bạ","ĐGNL"],q:300,bm:24.5,d:"Lập trình, cơ sở dữ liệu, trí tuệ nhân tạo và phát triển phần mềm.",k:["cong nghe thong tin","cntt"," it "]},
+{id:"attt",n:"An toàn thông tin",g:"Công nghệ",fee:28,dur:"4 năm",tc:"A00, A01",pt:["Điểm thi THPT","ĐGNL"],q:120,bm:24,d:"Bảo mật hệ thống, mạng và dữ liệu, kiểm thử xâm nhập.",k:["an toan thong tin","attt","bao mat"]},
+{id:"qtkd",n:"Quản trị kinh doanh",g:"Kinh tế",fee:24,dur:"4 năm",tc:"A00, C01, D01",pt:["Điểm thi THPT","Học bạ"],q:250,bm:23,d:"Quản trị doanh nghiệp, nhân sự, vận hành và khởi nghiệp.",k:["quan tri kinh doanh","qtkd"]},
+{id:"kt",n:"Kế toán",g:"Kinh tế",fee:22,dur:"4 năm",tc:"A00, C01, D01",pt:["Điểm thi THPT","Học bạ"],q:200,bm:22.5,d:"Kế toán doanh nghiệp, kiểm toán và phân tích tài chính.",k:["ke toan","kiem toan"]},
+{id:"mkt",n:"Marketing",g:"Kinh tế",fee:25,dur:"4 năm",tc:"A00, D01, D09",pt:["Điểm thi THPT","Học bạ","ĐGNL"],q:180,bm:23.5,d:"Nghiên cứu thị trường, truyền thông thương hiệu và marketing số.",k:["marketing","truyen thong","quang cao"]},
+{id:"luat",n:"Luật",g:"Xã hội",fee:23,dur:"4 năm",tc:"A00, C00, D01",pt:["Điểm thi THPT","Học bạ"],q:150,bm:23,d:"Luật dân sự, kinh tế và quốc tế; thực hành tư vấn pháp lý.",k:["luat","phap ly"]},
+{id:"nna",n:"Ngôn ngữ Anh",g:"Ngoại ngữ",fee:24,dur:"4 năm",tc:"D01, D09, D14",pt:["Điểm thi THPT","Học bạ","Chứng chỉ IELTS"],q:160,bm:23.5,d:"Tiếng Anh thương mại, biên phiên dịch và giảng dạy.",k:["ngon ngu anh","tieng anh"]},
+{id:"ctxh",n:"Công tác xã hội",g:"Xã hội",fee:18,dur:"4 năm",tc:"C00, D01, C14",pt:["Điểm thi THPT","Học bạ"],q:100,bm:20,d:"Hỗ trợ cộng đồng, bình đẳng giới, tham vấn và phát triển xã hội.",k:["cong tac xa hoi","ctxh"]}
+];
+const MID=Object.fromEntries(M.map(m=>[m.id,m]));
+const KB={
+ hb:["Học bổng 2026","• **Học bổng đầu vào:** miễn 100% học phí học kỳ 1 cho thí sinh đạt từ 27 điểm (tổ hợp 3 môn).\n• Giảm 50% học phí học kỳ 1 cho thí sinh đạt từ 25 điểm.\n• Giảm 30% học phí năm đầu cho thí sinh có IELTS từ 6.0.\n• Học bổng khuyến khích học tập xét mỗi học kỳ cho 10% sinh viên có kết quả cao nhất."],
+ hs:["Hồ sơ xét tuyển","Hồ sơ gồm:\n• Phiếu đăng ký xét tuyển (mẫu của trường)\n• Bản sao học bạ THPT có công chứng\n• Bản sao CCCD\n• Giấy chứng nhận ưu tiên (nếu có)\n• 2 ảnh 3×4\n• Lệ phí xét tuyển theo quy định hiện hành"],
+ tg:["Mốc thời gian","• **01/04 – 30/06/2026:** nhận hồ sơ xét học bạ\n• **Tháng 7:** đăng ký nguyện vọng xét điểm thi THPT trên hệ thống chung của Bộ GD&ĐT\n• **Tháng 8:** công bố kết quả và làm thủ tục nhập học\nHãy kiểm tra thông báo chính thức trên website của trường để biết ngày chính xác."],
+ pt:["Phương thức xét tuyển","Nhà trường có 4 phương thức:\n• **Điểm thi tốt nghiệp THPT** (chủ yếu)\n• **Học bạ** (trung bình 3 học kỳ, tối thiểu 18 điểm cho tổ hợp)\n• **Điểm đánh giá năng lực (ĐGNL)**\n• **Chứng chỉ ngoại ngữ** (IELTS từ 5.5) kết hợp học bạ"],
+ nganh:["Danh sách ngành","Năm 2026 trường tuyển sinh "+M.length+" ngành: "+M.map(m=>m.n).join(", ")+". Bạn muốn xem chi tiết ngành nào?"]
+};
+const INT=[[/may tinh|lap trinh|code|cong nghe|game|ai\b/,["cntt","attt"]],[/kinh doanh|quan ly|khoi nghiep|lanh dao/,["qtkd","mkt"]],[/so lieu|tai chinh|con so|ke toan/,["kt"]],[/luat|phap|cong ly/,["luat"]],[/tieng anh|ngoai ngu|dich|giao tiep/,["nna"]],[/xa hoi|cong dong|giup do|gioi|tam ly/,["ctxh"]],[/quang cao|truyen thong|sang tao|thuong hieu/,["mkt"]]];
+const N=s=>" "+s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/\s+/g," ").trim()+" ";
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const md=s=>esc(s).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").split("\n").map(l=>l.startsWith("• ")?'<div style="padding-left:14px;text-indent:-14px">'+l+"</div>":"<p>"+l+"</p>").join("");
+const $=id=>document.getElementById(id);
+let S={convs:[],regs:[],hits:{},theme:""},cur=null;
+try{S=Object.assign(S,JSON.parse(localStorage.getItem("admitbot")||"{}"))}catch(e){}
+const save=()=>{try{localStorage.setItem("admitbot",JSON.stringify(S))}catch(e){}};
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),2200)}
+const fee=m=>m.fee+" triệu đồng/năm";
+
+/* ---- Bộ xử lý câu hỏi ---- */
+function answer(text){
+ const q=N(text),has=(...w)=>w.some(x=>q.includes(x)),f=M.filter(m=>m.k.some(k=>q.includes(k.startsWith(" ")?k:" "+k.trim()))||q.includes(N(m.n).trim()));
+ f.forEach(m=>S.hits[m.id]=(S.hits[m.id]||0)+1);
+ if(has("can bo","nguoi that","tu van vien","gap nguoi","dang ky tu van","nhan tu van","lien he"))return{t:"Mình sẽ chuyển yêu cầu cho cán bộ tư vấn. Bạn điền nhanh biểu mẫu để cán bộ liên hệ lại nhé.",form:f[0]&&f[0].id};
+ if(/^ (xin chao|chao|hello|hi|alo)( |$)/.test(q)&&!f.length)return{t:"Chào bạn! Mình là trợ lý tuyển sinh AI. Hãy cho mình biết bạn muốn tìm hiểu ngành học nào!"};
+ if(has("thoi tiet","bong da","gia vang","nau an","bitcoin","phim "))return{t:"Mình chỉ hỗ trợ các câu hỏi về tuyển sinh: ngành học, học phí, điểm chuẩn, phương thức xét tuyển, lịch và hồ sơ. Bạn muốn hỏi về chủ đề nào?"};
+ const out=[];let ids=f.map(m=>m.id).slice(0,3),any=false;
+ if(f.length){
+  f.slice(0,3).forEach(m=>{const p=[];
+   if(has("hoc phi","chi phi","bao nhieu tien")){p.push("Học phí ngành **"+m.n+"** là **"+fee(m)+"** (năm tuyển sinh 2026).");any=true}
+   if(has("to hop","khoi","mon thi")){p.push("Ngành **"+m.n+"** xét các tổ hợp: **"+m.tc+"**.");any=true}
+   if(has("chi tieu","tuyen bao nhieu")){p.push("Chỉ tiêu ngành **"+m.n+"** năm 2026: **"+m.q+"** sinh viên.");any=true}
+   if(has("diem chuan","diem san","bao nhieu diem")){p.push("Điểm chuẩn ngành **"+m.n+"** năm 2025 (xét điểm thi THPT): **"+m.bm.toFixed(1)+"** điểm.");any=true}
+   if(has("phuong thuc","xet tuyen nhu the nao")){p.push("Ngành **"+m.n+"** xét theo: "+m.pt.join(", ")+".");any=true}
+   if(has("bao lau","may nam","thoi gian dao tao")){p.push("Thời gian đào tạo ngành **"+m.n+"**: "+m.dur+".");any=true}
+   if(!p.length)p.push("**"+m.n+"** – "+m.d);out.push(p.join("\n"))});
+  if(has("hoc bong")){out.push(KB.hb[1]);any=true}
+  return{t:out.join("\n\n"),ids,src:SRC,offer:true};
+ }
+ const key=has("hoc bong","mien giam")?"hb":has("ho so","giay to","thu tuc")?"hs":has("han nop","bao gio","moc thoi gian","lich","deadline","het han","khi nao")?"tg":has("phuong thuc","xet hoc ba","xet tuyen","chung chi")?"pt":has("nganh nao","danh sach nganh","co nhung nganh","tuyen nhung nganh")?"nganh":"";
+ if(key)return{t:KB[key][1],src:SRC,ids:key==="nganh"?M.map(m=>m.id).slice(0,3):[]};
+ if(has("hoc phi","chi phi")){const a=M.map(m=>m.fee);return{t:"Học phí năm 2026 dao động từ **"+Math.min(...a)+"** đến **"+Math.max(...a)+" triệu đồng/năm** tùy ngành. Bạn quan tâm ngành nào để mình báo mức cụ thể?",src:SRC}}
+ if(has("diem chuan","diem san"))return{t:"Điểm chuẩn năm 2025 từ **"+Math.min(...M.map(m=>m.bm))+"** đến **"+Math.max(...M.map(m=>m.bm))+"** điểm (xét điểm thi THPT). Hãy cho mình biết tên ngành để xem điểm cụ thể.",src:SRC};
+ if(has("chi tieu"))return{t:"Tổng chỉ tiêu năm 2026 là **"+M.reduce((s,m)=>s+m.q,0)+"** sinh viên cho "+M.length+" ngành. Bạn muốn xem chỉ tiêu ngành nào?",src:SRC};
+ if(has("goi y","phu hop","nen hoc","thich","hop voi")){
+  const set=new Set();INT.forEach(([r,l])=>{if(r.test(q))l.forEach(i=>set.add(i))});
+  if(set.size)return{t:"Dựa trên sở thích bạn chia sẻ, mình gợi ý các ngành sau. Đây chỉ là gợi ý cơ bản, bạn nên trao đổi thêm với cán bộ tư vấn.",ids:[...set].slice(0,3),src:SRC};
+  return{t:"Để gợi ý ngành phù hợp, bạn kể mình nghe bạn thích gì nhé: máy tính và lập trình, kinh doanh, tiếng Anh, luật hay hoạt động xã hội?"};
+ }
+ return{t:"Hiện mình chưa có thông tin chính xác cho câu hỏi này, nên mình không muốn đoán. Bạn có thể đăng ký để cán bộ tư vấn liên hệ trả lời trực tiếp.",offer:true,form:"",soft:true};
+}
+
+/* ---- Hội thoại ---- */
+const WELCOME="Chào bạn! Mình là trợ lý tuyển sinh AI. Hãy cho mình biết bạn muốn tìm hiểu ngành học nào!";
+function newConv(){cur={id:Date.now(),title:"Cuộc trò chuyện mới",msgs:[{r:"b",t:WELCOME}]};S.convs.unshift(cur);save();renderAll()}
+function mcard(id){const m=MID[id];return '<div class="mc"><b>'+m.n+'</b><div class="m">'+m.g+" · "+m.dur+" · Tổ hợp "+m.tc+'</div><div><span class="f">'+fee(m)+"</span> · Chỉ tiêu "+m.q+" · Điểm chuẩn 2025: "+m.bm.toFixed(1)+"</div></div>"}
+function renderMsgs(){
+ const box=$("msgs");box.innerHTML="";
+ cur.msgs.forEach((m,i)=>{
+  const row=document.createElement("div");row.className="row "+m.r;
+  if(m.r==="u"){row.innerHTML='<div class="bub">'+esc(m.t)+"</div>"}
+  else{let h=md(m.t);(m.ids||[]).forEach(id=>h+=mcard(id));
+   if(m.src)h+='<div class="src">'+m.src+"</div>";
+   let a="";
+   if(m.form!==undefined)a+='<button class="chip p" data-reg="'+(m.form||"")+'">Đăng ký nhận tư vấn</button>';
+   else if(m.offer)a+='<button class="chip" data-reg="'+((m.ids||[])[0]||"")+'">Gặp cán bộ tư vấn</button>';
+   if(i>0&&m.t!==WELCOME)a+='<button class="chip" data-rate="1" aria-label="Hữu ích">👍</button><button class="chip" data-rate="0" aria-label="Chưa hữu ích">👎</button>';
+   row.innerHTML='<div class="av">A</div><div class="bub">'+h+(a?'<div class="acts">'+a+"</div>":"")+"</div>"}
+  box.appendChild(row)});
+ box.scrollTop=box.scrollHeight}
+function renderHist(){
+ const h=$("hist");h.innerHTML=S.convs.length?"":'<div class="empty">Chưa có cuộc trò chuyện nào.</div>';
+ S.convs.forEach(c=>{const d=document.createElement("div");d.className="hi"+(c===cur?" on":"");
+  d.innerHTML='<button class="t"></button><button class="x" aria-label="Xóa cuộc trò chuyện">×</button>';
+  d.firstChild.textContent=c.title;
+  d.firstChild.onclick=()=>{cur=c;go("chat");renderAll();$("side").classList.remove("open")};
+  d.lastChild.onclick=()=>{S.convs=S.convs.filter(x=>x!==c);if(cur===c)cur=S.convs[0]||null;if(!cur)return newConv();save();renderAll();toast("Đã xóa cuộc trò chuyện")};
+  h.appendChild(d)})}
+function renderSug(){const l=["Học phí ngành Công nghệ thông tin?","Các ngành có những tổ hợp nào?","Điểm chuẩn ngành Kế toán","Học bổng 2026","Hạn nộp hồ sơ xét học bạ","Gợi ý ngành cho bạn thích lập trình"];
+ $("sug").innerHTML=l.map(x=>'<button class="chip">'+x+"</button>").join("")}
+function renderAll(){renderHist();renderMsgs();renderStats();renderRegs()}
+function ask(text){
+ text=text.trim();if(!text)return;
+ if(cur.title==="Cuộc trò chuyện mới")cur.title=text.slice(0,40);
+ cur.msgs.push({r:"u",t:text});renderMsgs();renderHist();
+ const box=$("msgs"),t=document.createElement("div");t.className="row";t.innerHTML='<div class="av">A</div><div class="bub typing"><span></span><span></span><span></span></div>';box.appendChild(t);box.scrollTop=box.scrollHeight;
+ setTimeout(()=>{let r;try{r=answer(text)}catch(e){r={t:"Xin lỗi, hệ thống đang gặp sự cố. Bạn thử lại sau hoặc gặp cán bộ tư vấn nhé.",offer:true}}
+  cur.msgs.push({r:"b",t:r.t,ids:r.ids,src:r.src,offer:r.offer&&r.form===undefined,form:r.form});save();renderAll()},550)}
+
+/* ---- Tra cứu ngành ---- */
+function renderLookup(){
+ const q=N($("fq").value),g=$("fg").value,f=+$("ff").value,p=$("fm").value;
+ const l=M.filter(m=>(!q.trim()||N(m.n).includes(q.trim()))&&(!g||m.g===g)&&(!f||m.fee<=f)&&(!p||m.pt.includes(p)));
+ $("mgrid").innerHTML=l.length?l.map(m=>'<div class="card"><h3>'+m.n+'</h3><div class="m">'+m.g+'</div><dl><dt>Học phí</dt><dd>'+fee(m)+'</dd><dt>Thời gian</dt><dd>'+m.dur+'</dd><dt>Tổ hợp</dt><dd>'+m.tc+'</dd><dt>Xét tuyển</dt><dd>'+m.pt.join(", ")+'</dd><dt>Chỉ tiêu</dt><dd>'+m.q+'</dd></dl><div class="m">'+m.d+'</div><div class="acts"><button class="chip" data-ask="'+m.n+'">Hỏi chatbot</button><button class="chip p" data-reg="'+m.id+'">Đăng ký tư vấn</button></div></div>').join(""):'<div class="empty">Không có ngành phù hợp. Hãy bỏ bớt bộ lọc để xem thêm.</div>'}
+function initLookup(){
+ $("fg").innerHTML='<option value="">Mọi nhóm ngành</option>'+[...new Set(M.map(m=>m.g))].map(g=>"<option>"+g+"</option>").join("");
+ $("fm").innerHTML='<option value="">Mọi phương thức</option>'+[...new Set(M.flatMap(m=>m.pt))].map(g=>"<option>"+g+"</option>").join("");
+ ["fq","fg","ff","fm"].forEach(i=>$(i).addEventListener("input",renderLookup));renderLookup();
+ $("rm").innerHTML=M.map(m=>'<option value="'+m.id+'">'+m.n+"</option>").join("")}
+
+/* ---- Đăng ký / thống kê ---- */
+function openReg(id){["rn","rc","rt"].forEach(i=>$(i).value="");$("e1").textContent=$("e2").textContent="";if(id)$("rm").value=id;$("dlg").showModal()}
+function saveReg(){
+ const n=$("rn").value.trim(),c=$("rc").value.trim();let ok=true;
+ $("e1").textContent=n.length<2?(ok=false,"Nhập họ và tên."):"";
+ $("e2").textContent=!(/^(\+?84|0)\d{9}$/.test(c.replace(/[\s.]/g,""))||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c))?(ok=false,"Nhập số điện thoại hoặc email đúng định dạng."):"";
+ if(!ok)return;
+ const id=$("rm").value;S.regs.unshift({n,c,id,note:$("rt").value.trim(),st:"Chờ xử lý",at:new Date().toLocaleDateString("vi-VN")});
+ S.hits[id]=(S.hits[id]||0)+2;save();$("dlg").close();renderAll();toast("Đã gửi đăng ký tư vấn");
+ if(cur){cur.msgs.push({r:"b",t:"Mình đã ghi nhận đăng ký tư vấn ngành **"+MID[id].n+"** của bạn "+n+". Cán bộ sẽ liên hệ qua "+c+" trong giờ hành chính."});save();renderMsgs()}}
+function renderRegs(){
+ $("rlist").innerHTML=S.regs.length?S.regs.map(r=>{const m=MID[r.id];return '<div class="rg"><div><b>'+m.n+'</b><div class="m" style="color:var(--mute);font-size:13.5px">'+m.g+" · "+fee(m)+" · "+m.pt.join(", ")+"<br>"+esc(r.n)+" · "+esc(r.c)+" · "+r.at+'</div></div><span class="tag">'+r.st+"</span></div>"}).join(""):'<div class="empty">Bạn chưa đăng ký ngành nào. Chọn “Đăng ký tư vấn” ở trang Tra cứu ngành hoặc trong khung chat.</div>'}
+function renderStats(){
+ const ids=[...new Set(S.regs.map(r=>r.id))],tot=ids.reduce((s,i)=>s+MID[i].fee,0),gr=new Set(ids.map(i=>MID[i].g)).size;
+ const top=Object.entries(S.hits).sort((a,b)=>b[1]-a[1]);
+ $("sgrid").innerHTML=[[ids.length,"Ngành đã đăng ký"],[tot+" triệu","Học phí dự kiến/năm"],[gr,"Nhóm ngành quan tâm"],[top[0]?MID[top[0][0]].n:"Chưa có","Ngành quan tâm nhiều nhất"]].map(x=>'<div class="stat"><b style="'+(String(x[0]).length>9?"font-size:18px":"")+'">'+x[0]+"</b><span>"+x[1]+"</span></div>").join("");
+ const mx=top[0]?top[0][1]:1;
+ $("sbars").innerHTML=top.length?top.map(([i,v])=>'<div class="bar"><span>'+MID[i].n+'</span><i style="width:'+Math.max(6,v/mx*60)+'%"></i>'+v+"</div>").join(""):'<div class="empty">Hãy hỏi chatbot về một ngành để thấy thống kê.</div>'}
+
+/* ---- Điều hướng & sự kiện ---- */
+function go(v){document.querySelectorAll(".view").forEach(e=>e.classList.toggle("on",e.id==="v-"+v));document.querySelectorAll(".nav").forEach(e=>e.classList.toggle("on",e.dataset.v===v));$("side").classList.remove("open");if(v==="chat")$("msgs").scrollTop=1e9}
+document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>go(b.dataset.v));
+$("newchat").onclick=()=>{newConv();go("chat")};
+$("menu").onclick=()=>$("side").classList.toggle("open");
+$("send").onclick=()=>{const v=$("inp").value;$("inp").value="";ask(v)};
+$("inp").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();$("send").click()}});
+$("sug").onclick=e=>{if(e.target.classList.contains("chip"))ask(e.target.textContent)};
+document.addEventListener("click",e=>{const b=e.target.closest("[data-reg],[data-ask],[data-rate]");if(!b)return;
+ if(b.dataset.reg!==undefined)openReg(b.dataset.reg);
+ else if(b.dataset.ask){go("chat");ask("Thông tin ngành "+b.dataset.ask)}
+ else{b.parentNode.querySelectorAll("[data-rate]").forEach(x=>x.disabled=true);toast("Cảm ơn bạn đã đánh giá")}});
+$("rsave").onclick=saveReg;$("rc-cancel").onclick=()=>$("dlg").close();
+$("copy").onclick=async()=>{const t=cur.msgs.map(m=>(m.r==="u"?"Bạn: ":"AdmitBot: ")+m.t).join("\n\n");try{await navigator.clipboard.writeText(t);toast("Đã sao chép hội thoại")}catch(e){toast("Không sao chép được. Hãy bôi đen và sao chép thủ công.")}};
+function theme(t){if(t)document.documentElement.setAttribute("data-theme",t);else document.documentElement.removeAttribute("data-theme")}
+$("theme").onclick=()=>{const dark=document.documentElement.getAttribute("data-theme")==="dark"||(!document.documentElement.getAttribute("data-theme")&&matchMedia("(prefers-color-scheme:dark)").matches);S.theme=dark?"light":"dark";theme(S.theme);save()};
+theme(S.theme);initLookup();renderSug();
+cur=S.convs[0]||null;if(!cur)newConv();else renderAll();
+</script>
+</body>
+</html>
